@@ -9,13 +9,21 @@ window.addEventListener("load", function () {
     constructor(game) {
       this.game = game;
       window.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowUp") {
+        if (
+          (e.key === "ArrowUp" || e.key === "ArrowDown") &&
+          this.game.keys.indexOf(e.key) === -1
+        ) {
           this.game.keys.push(e.key);
+        } else if (e.key === " ") {
+          this.game.player.shootTop();
+        } else if (e.key === "d") {
+          this.game.debug = !this.game.debug;
         }
-        if (e.key === "ArrowDown") {
-          this.game.keys.push(e.key);
+      });
+      window.addEventListener("keyup", (e) => {
+        if (this.game.keys.indexOf(e.key) > -1) {
+          this.game.keys.splice(this.game.keys.indexOf(e.key), 1);
         }
-        console.log(this.game.keys);
       });
     }
   }
@@ -28,9 +36,19 @@ window.addEventListener("load", function () {
       this.x = 20;
       this.y = 100;
       this.speedY = 0.2;
+      this.maxSpeed = 2;
     }
 
     update() {
+      if (this.game.keys.includes("ArrowUp")) {
+        this.speedY = -this.maxSpeed;
+        return;
+      }
+      if (this.game.keys.includes("ArrowDown")) {
+        this.speedY = +this.maxSpeed;
+        return;
+      }
+
       this.y += this.speedY;
     }
 
