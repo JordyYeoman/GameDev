@@ -1,0 +1,98 @@
+# Mac OS X artifacts - [https://en.wikipedia.org/wiki/.DS_Store]
+.DS_Store
+
+# Git Hooks [https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks] - Side effects for Git commands; config
+.husky
+
+# Node.js [https://nodejs.org/en/] - JavaScript runtime
+node_modules/
+package-lock.json
+npm-debug.log
+yarn-error.log
+.npmrc
+.yalc
+yalc.lock
+
+# Yarn
+.yarnrc
+.pnp.*
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# TypeScript [https://www.typescriptlang.org/tsconfig]
+*.tsbuildinfo
+
+# Apple Xcode IDE [https://developer.apple.com/xcode/]
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+ios/ReactNative.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+
+# CocoaPods [https://cocoapods.org/] - Dependency manager for Switch and Objective-C projects; iOS dependencies for this project
+/ios/Pods/
+
+# JetBrains IntelliJ IDEA IDE [https://www.jetbrains.com/idea/] and Android Studio IDE [https://developer.android.com/studio]
+.idea
+*.iml
+android/.project
+
+# Gradle [https://gradle.org/] - Build tool (used for building Android app bundles); config, artifacts
+build/
+.gradle
+local.properties
+
+# Fastlane [https://fastlane.tools/] - Native app build automation tool; artifacts
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots
+**/fastlane/test_output
+
+# React Native [https://reactnative.dev/] - React.js based framework for native apps development; artifacts
+*.jsbundle
+
+# Testing artifacts; config, artifacts
+.jest
+coverage
+
+# Detox [https://wix.github.io/Detox/]-  End-to-End (E2E) testing tool; artifacts
+e2e/artifacts/
+
+# General project specific artifacts
+#
+# Created by the `set_brand.js` script, and used by and expanded upn by `tsconfig.json`, for path aliasing depending on which brand of the app is being run
+brand.json
+#
+# Generated file, used to populate the IP address of the machine locally trying to connect to the Android React Native app in Android Emulators.
+debug_network_security_config.xml
+
+# visualize-bundle [https://github.com/JonnyBurger/npx-visualize-bundle] - Tool to visualise size of project node dependencies; artifacts
+/bundle-reports/
+
+# Ruby Gems (Bundler) [https://bundler.io/] - Package manager for Ruby gems; artifacts
+/vendor/
+perf-results.txt
+
+.png
