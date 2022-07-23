@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: black;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+#canvas {
+  display: block;
+  background: blue;
+}
+
+/* // Hide elements and instead programatically show them using js */
+/* #player,
+#backgroundImage,
+#enemyImage,
+#layer1,
+#layer2,
+#layer3,
+#layer4 {
+  display: none;
+} */
