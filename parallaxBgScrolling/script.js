@@ -49,25 +49,39 @@ window.onload = () => {
     // height: number;
     // x: number;
     // y: number;
-    constructor(game, image, speedModifier) {
+    constructor(game, image, speedModifier, imageWidth, imageHeight) {
       this.game = game;
       this.image = image;
       this.speedModifier = speedModifier;
       // TODO - Make responsive
-      this.width = 1768;
-      this.height = 500;
+      this.width = this.game.width;
+      this.height = this.game.height;
       this.x = 0;
       this.y = 0;
+      this.imageWidth = imageWidth;
+      this.imageHeight = imageHeight;
     }
     update() {
       if (this.x <= -this.width) this.x = 0;
       this.x -= this.game.speed * this.speedModifier;
     }
     draw(context) {
-      context.drawImage(this.image, this.x, this.y);
-      context.drawImage(this.image, this.x + this.width, this.y);
+      context.drawImage(
+        this.image,
+        this.x,
+        this.y,
+        this.imageWidth,
+        this.imageHeight,
+        0,
+        0,
+        this.width,
+        this.height
+      );
+      // context.drawImage(this.image, this.x + this.width, this.y);
     }
   }
+
+  //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
 
   // Handle all layers to create game world
   // TODO - After a certain interval - switch to new background
@@ -86,13 +100,14 @@ window.onload = () => {
       this.game = game;
       this.image1 = document.getElementById("layer1");
       this.image2 = document.getElementById("layer2");
-      this.image3 = document.getElementById("layer3");
-      this.image4 = document.getElementById("layer4");
-      this.layer1 = new Layer(this.game, this.image1, 0.2);
-      this.layer2 = new Layer(this.game, this.image2, 0.4);
-      this.layer3 = new Layer(this.game, this.image3, 1);
-      this.layer4 = new Layer(this.game, this.image4, 1.5);
-      this.layers = [this.layer1, this.layer2, this.layer3];
+      // this.image3 = document.getElementById("layer3");
+      // this.image4 = document.getElementById("layer4");
+      this.layer1 = new Layer(this.game, this.image1, 0, 384, 216);
+      this.layer2 = new Layer(this.game, this.image2, 0.4, 384, 216);
+      // this.layer3 = new Layer(this.game, this.image3, 1);
+      // this.layer4 = new Layer(this.game, this.image4, 1.5);
+      // this.layers = [this.layer1, this.layer2, this.layer3];
+      this.layers = [this.layer1, this.layer2];
     }
     update() {
       this.layers.forEach((layer) => layer.update());
