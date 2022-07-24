@@ -267,3 +267,4 @@ window.onload = () => {
 //  - 1. Make sure the image id you are referencing is acutally correct.
 //  - 2. Check your math logic to see if prefilled data from Tabnine.
 //        for eg, has not done something silly like this.gameHeight - this.gameHeight instead of this.gameHeight - this.height (player height). DOH!
+//  - 3. ......
