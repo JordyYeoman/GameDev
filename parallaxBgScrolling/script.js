@@ -1,7 +1,7 @@
 window.onload = () => {
   const canvas = document.getElementById("canvas1");
   const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
+  canvas.width = 800;
   // canvas.height = window.innerHeight;
   canvas.height = 800;
 
@@ -10,7 +10,6 @@ window.onload = () => {
     // keys: never[];
     constructor(game) {
       this.game = game;
-      console.log(this.game);
       // Check if keypress is one of the arrow keys AND make sure the keypress isn't already being pressed.
       window.addEventListener("keydown", (e) => {
         if (
@@ -62,8 +61,10 @@ window.onload = () => {
       this.imageHeight = imageHeight;
     }
     update() {
-      if (this.x <= -this.width) this.x = 0;
-      this.x -= this.game.speed * this.speedModifier;
+      if (this.image?.id === "layer2") {
+      }
+      this.x += this.game.speed * this.speedModifier;
+      if (this.x > this.imageWidth) this.x = 0;
     }
     draw(context) {
       context.drawImage(
@@ -77,7 +78,17 @@ window.onload = () => {
         this.width,
         this.height
       );
-      // context.drawImage(this.image, this.x + this.width, this.y);
+      context.drawImage(
+        this.image,
+        this.x - this.imageWidth,
+        this.y,
+        this.imageWidth,
+        this.imageHeight,
+        0,
+        0,
+        this.width,
+        this.height
+      );
     }
   }
 
@@ -100,14 +111,21 @@ window.onload = () => {
       this.game = game;
       this.image1 = document.getElementById("layer1");
       this.image2 = document.getElementById("layer2");
-      // this.image3 = document.getElementById("layer3");
-      // this.image4 = document.getElementById("layer4");
+      this.image3 = document.getElementById("layer3");
+      this.image4 = document.getElementById("layer4");
+      this.image5 = document.getElementById("layer5");
       this.layer1 = new Layer(this.game, this.image1, 0, 384, 216);
-      this.layer2 = new Layer(this.game, this.image2, 0.4, 384, 216);
-      // this.layer3 = new Layer(this.game, this.image3, 1);
-      // this.layer4 = new Layer(this.game, this.image4, 1.5);
-      // this.layers = [this.layer1, this.layer2, this.layer3];
-      this.layers = [this.layer1, this.layer2];
+      this.layer2 = new Layer(this.game, this.image2, 0.02, 384, 216);
+      this.layer3 = new Layer(this.game, this.image3, 0.09, 384, 216);
+      this.layer4 = new Layer(this.game, this.image4, 0.15, 384, 216);
+      this.layer5 = new Layer(this.game, this.image5, 0.05, 384, 216);
+      this.layers = [
+        this.layer1,
+        this.layer3,
+        this.layer2,
+        this.layer4,
+        this.layer5,
+      ];
     }
     update() {
       this.layers.forEach((layer) => layer.update());
@@ -135,19 +153,31 @@ window.onload = () => {
       this.game = game;
       this.gameHeight = game.height;
       this.gameWidth = game.width;
-      this.width = 25;
-      this.height = 23;
-      this.x = 0;
-      this.y = this.gameHeight - this.height;
-      this.image = document.getElementById("player");
+      this.width = 24;
+      this.height = 24 - 2;
+      this.x = getRandomIntFromRange(0, 100);
+      // Spawn player 100 pixels above floor when they are generated.
+      this.y = this.gameHeight - this.height - this.gameHeight / 4;
+      this.image = getRandomSkinFromAllSkins();
       this.frameX = 0;
+      this.maxFrame = 10;
+      this.fps = 10;
+      this.frameTimer = 0;
+      this.frameInterval = 1000 / this.fps;
       this.frameY = 0;
       this.speed = 0;
       this.vy = 0;
       this.weight = 1;
+      // Testing animation states
+      this.startFrame = 0;
+      // TODO - Change animation direction 1 for right, -1 for left
+      this.flipX = 1;
     }
     draw(context) {
-      context.fillStyle = "white";
+      // Save context to apply flipX if necessary
+      context.save();
+      context.fillStyle = "transparent";
+      context.scale(this.flipX, 1);
       context.fillRect(this.x, this.y, this.width, this.height);
       context.drawImage(
         this.image,
@@ -160,13 +190,33 @@ window.onload = () => {
         this.width,
         this.height
       );
+      context.restore();
     }
-    update() {
+    update(deltaTime) {
+      // ANIMATION
+      // Sprite animation
+      if (this.frameTimer > this.frameInterval) {
+        if (this.frameX >= this.maxFrame) this.frameX = this.startFrame;
+        else this.frameX++;
+        this.frameTimer = this.startFrame;
+      } else {
+        this.frameTimer += deltaTime;
+      }
+
+      // Restore flipX if left key not pressed
+      this.flipX = 1;
+
+      // CONTROLS
       // Keyboard input
       if (this.game.keys.indexOf("ArrowRight") > -1) {
-        this.speed = 5;
+        this.startFrame = 3;
+        this.maxFrame = 8;
+        this.speed = 1.5;
       } else if (this.game.keys.indexOf("ArrowLeft") > -1) {
-        this.speed = -5;
+        this.startFrame = 3;
+        this.maxFrame = 8;
+        this.speed = -1.5;
+        this.flipX = -1;
       } else if (
         (this.game.keys.indexOf("ArrowUp") > -1 ||
           this.game.keys.indexOf(" ") > -1) &&
@@ -174,6 +224,9 @@ window.onload = () => {
       ) {
         this.vy -= 30;
       } else {
+        // When no keyboard input, play idle animation & stop movement
+        this.startFrame = 0;
+        this.maxFrame = 3;
         this.speed = 0;
       }
 
@@ -188,7 +241,6 @@ window.onload = () => {
       this.y += this.vy;
       // If player is not on the ground, apply weight factor (basic gravity)
       if (!this.onGround()) {
-        console.log("Not on ground");
         this.vy += this.weight;
       } else {
         this.vy = 0;
@@ -211,6 +263,8 @@ window.onload = () => {
     height;
     background;
     player;
+    player2;
+    players;
     input;
     keys;
     gameTime;
@@ -222,7 +276,13 @@ window.onload = () => {
       this.height = height;
       // This is the game class instance passed to each of the newly created classes below
       this.background = new Background(this);
-      this.player = new Player(this);
+      this.players = [
+        new Player(this),
+        new Player(this),
+        new Player(this),
+        new Player(this),
+        new Player(this),
+      ];
       this.input = new InputHandler(this);
       // this.ui = new UI(this);
       this.keys = [];
@@ -241,15 +301,20 @@ window.onload = () => {
       this.gameTime += deltaTime;
       this.background.update();
       // this.background.layer4.update();
-      this.player.update(deltaTime);
+      // Loop over players and update
+      this.players.forEach((player) => {
+        player.update(deltaTime);
+      });
     }
     // Order of rendering the draw method for each class instance matters
     // IE - first layer is the background.
     draw(context) {
       this.background.draw(context);
       // this.ui.draw(context);
-      this.player.draw(context);
       // this.background.layer4.draw(context);
+      this.players.forEach((player) => {
+        player.draw(context);
+      });
     }
     // Rectangle object collision detection
     checkCollision(rect1, rect2) {
@@ -278,8 +343,20 @@ window.onload = () => {
   animateGame(0);
 };
 
+// Helper methods
+const getRandomIntFromRange = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+const skinsArr = ["mort", "doux", "tard", "vita"];
+
+const getRandomSkinFromAllSkins = (skins) => {
+  let randomSkinInt = getRandomIntFromRange(0, 3);
+  return document.getElementById(skinsArr[randomSkinInt]);
+};
+
 // 🤦 Facepalms 🤦
 //  - 1. Make sure the image id you are referencing is acutally correct.
 //  - 2. Check your math logic to see if prefilled data from Tabnine.
 //        for eg, has not done something silly like this.gameHeight - this.gameHeight instead of this.gameHeight - this.height (player height). DOH!
-//  - 3. ......
+//  - 3. Check following logic after expecting 'X' event to occur, you might be overwriting it in the following lines of code.
