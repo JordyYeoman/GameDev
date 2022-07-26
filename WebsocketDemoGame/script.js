@@ -80,8 +80,8 @@ window.onload = () => {
       this.gameHeight = game.height;
       this.gameWidth = game.width;
       this.radius = 10;
-      this.x = this.gameWidth / 2;
-      this.y = this.gameHeight / 2;
+      this.x = this.gameWidth / randomInteger(0, 2);
+      this.y = this.gameHeight / randomInteger(0, 2);
       this.direction = new Vector(0, 0);
       this.speed = 1;
       this.maxSpeed = 15;
@@ -171,7 +171,12 @@ window.onload = () => {
       this.width = width;
       this.height = height;
       // This is the game class instance passed to each of the newly created classes below
-      this.player = new Player(this);
+      this.players = [
+        new Player(this),
+        new Player(this),
+        new Player(this),
+        new Player(this),
+      ];
       this.input = new InputHandler(this);
       // this.ui = new UI(this);
       this.keys = [];
@@ -188,12 +193,16 @@ window.onload = () => {
     }
     update(deltaTime) {
       this.gameTime += deltaTime;
-      this.player.update(deltaTime);
+      this.players.forEach((player) => {
+        player.update(deltaTime);
+      });
     }
     // Order of rendering the draw method for each class instance matters
     // IE - first layer is the background.
     draw(context) {
-      this.player.draw(context);
+      this.players.forEach((player) => {
+        player.draw(context);
+      });
     }
     // Rectangle object collision detection
     checkCollision(rect1, rect2) {
@@ -220,4 +229,15 @@ window.onload = () => {
     requestAnimationFrame(animateGame);
   };
   animateGame(0);
+
+  let button = document.getElementById('addPlayerButton');
+  button.addEventListener('click', () => {
+    console.log('ADDING PLAYER');
+    game?.players.push(new Player(game));
+  });
+
+  // Utility method
+  function randomInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 };
